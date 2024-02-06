@@ -2,6 +2,10 @@ import json
 from flask import Flask
 import mysql.connector
 
+
+with open('config.json', 'r') as file:
+    config_data = json.load(file)
+
 app = Flask(__name__)
 
 @app.route("/empleadosLista")
@@ -9,10 +13,10 @@ app = Flask(__name__)
 def obtenerLista():
 
   mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    database="homies"
-  )
+    host=config_data['mydb']['host'],
+    user=config_data['mydb']['user'],
+    database=config_data['mydb']['database']
+)
   mycursor = mydb.cursor()
 
   listaEmpleados = "SELECT * FROM empleados"
@@ -30,11 +34,12 @@ def obtenerLista():
 @app.route("/empleadosNuevo")
 
 def AñadirUser():
+
   mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    database="homies"
-  )
+    host=config_data['mydb']['host'],
+    user=config_data['mydb']['user'],
+    database=config_data['mydb']['database']
+)
   mycursor = mydb.cursor()
 
   nombre = input("Nombre: ")

@@ -1,5 +1,5 @@
 import json
-from flask import Flask
+from flask import Flask, request, render_template
 import mysql.connector
 
 
@@ -7,6 +7,12 @@ with open('config.json', 'r') as file:
     config_data = json.load(file)
 
 app = Flask(__name__)
+
+@app.route("/")
+def vistaPrincipal():
+
+
+    return render_template("index.html")
 
 @app.route("/empleadosLista")
 def obtenerLista():
@@ -40,25 +46,36 @@ def obtenerLista():
     else:
         return "No se encontraron resultados."
 
-@app.route("/empleadosNuevo")
+@app.route("/empleadosNuevo", methods=["POST"])
 
 def AñadirUser():
 
-  mydb = mysql.connector.connect(
-    host=config_data['mydb']['host'],
-    user=config_data['mydb']['user'],
-    database=config_data['mydb']['database']
-)
-  mycursor = mydb.cursor()
+    try:
+        # Obtener los datos del cuerpo de la solicitud en formato JSON
+        data = request.get_json()
 
-  nombre = input("Nombre: ")
-  idEmpleado = input("Id: ")
-  rol = input("Rol: ")
+        # Extraer los valores del diccionario JSON
+        nombre = data["nombre"]
+        idEmpleado = data["id_empleado"]
+        rol = data["rol"]
 
-  sql = "INSERT INTO empleados (nombre, id_empleado, rol) VALUES (%s, %s, %s)"
-  val = (nombre, idEmpleado, rol)
-  mycursor.execute(sql, val)
+        # Conectar a la base de datos y realizar la inserción
+        mydb = mysql.connector.connect(
+            host=config_data['mydb']['host'],
+            user=config_data['mydb']['user'],
+            database=config_data['mydb']['database']
+        )
 
-  mydb.commit()
-  return "¡Añadido correctamente!"
+        mycursor = mydb.cursor()
+
+        sql = "INSERT INTO empleados (nombre, id_empleado, rol) VALUES (%s, %s, %s)"
+        val = (nombre, idEmpleado, rol)
+        mycursor.execute(sql, val)
+
+        mydb.commit()
+
+        return "¡Añadido correctamente!"
+    except Exception as e:
+        return str(e), 400  # Devolver un mensaje de error y código de estado 400 en caso de problemas
+
 

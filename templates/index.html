@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <h1>HOMIES DATA</h1>
   <p>Empresa fundada por Ángel Linero, Jorge Reina y Amanda Navas</p>
   <p>Nos dedicamos a la venta de zapatillas exclusivas, esa que no encuentras nunca, ¡Las tenemos!</p>
-  <button><a href="{{ url_for('obtenerLista') }}">Lista empleados</a></button> <br>
-  <a href="{{ url_for('AñadirUser') }}">Añadir Usuario</a>
-
+  <button><a href="{{ url_for('vistaEmpleados') }}">Empleados</a></button>
 </body>
 </html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='empleados.css') }}">
+</head>
+<body>
+  <h1>EMPLEADOS</h1>
+  <p>¡Consulta lo que quieras sobre nuestros empleados!</p> 
+  <div>
+  <button><a href="{{ url_for('obtenerLista') }}">Lista empleados</a></button> <br>
+  <button><a href="{{ url_for('AñadirEmpleado') }}">Añadir Usuario</a></button> <br>
+  <button><a href="{{ url_for('modificarEmpleado') }}">Modificar empleado</a></button>
+</div>
+</body>
+</html>

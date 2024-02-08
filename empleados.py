@@ -43,16 +43,16 @@ def obtenerLista(rol):
         myresult = mycursor.fetchall()
         
         #Nombre de las columnas, a través del .description
-        column_names = [i[0] for i in mycursor.description]
+        columnasTabla = [i[0] for i in mycursor.description]
 
             # Crear una lista de diccionarios, cada uno representando a un empleado
-        employees_dict_list = [
-        {column_names[i]: row[i] for i in range(len(column_names))}
-        for row in myresult
+        listaEmpleados = [
+        {columnasTabla[i]: columna[i] for i in range(len(columnasTabla))}
+        for columna in myresult
         ]
 
         # Convertimos esa lista en un json y lo mostramos
-        return json.dumps(employees_dict_list)
+        return json.dumps(listaEmpleados)
     except Exception as e:
         return str(e), 400
         
@@ -138,6 +138,32 @@ def eliminarEmpleado(id):
         mydb.commit()
 
         return {"mensaje": "Ok"}, 200
+    except Exception as e:
+        return {"Error": str(e)}, 400
+    
+@app.route("/empleado/<id>", methods = ["GET"])
+def obtenerEmpleado(id):
+    try:
+        mydb = mysql.connector.connect(
+            host=config_data['mydb']['host'],
+            user=config_data['mydb']['user'],
+            database=config_data['mydb']['database']
+        )
+
+        mycursor = mydb.cursor()
+
+        sql = "SELECT * FROM empleados WHERE id_empleado = %s"
+        val = (id,)
+        mycursor.execute(sql, val)
+
+        myresult = mycursor.fetchone()
+
+        columnasTabla = [i[0] for i in mycursor.description]
+
+        empleado = {columnasTabla[i]: myresult[i] for i in range(len(columnasTabla))}
+        
+
+        return json.dumps(empleado)
     except Exception as e:
         return {"Error": str(e)}, 400
 

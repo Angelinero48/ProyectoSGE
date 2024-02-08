@@ -114,6 +114,30 @@ def modificarEmpleado():
 
     return "¡Empleado modificado correctamente!"
 
+@app.route("/eliminarEmpleado/<nombre>", methods=["DELETE"])
+
+def eliminarEmpleado(nombre):
+    try:
+        mydb = mysql.connector.connect(
+            host=config_data['mydb']['host'],
+            user=config_data['mydb']['user'],
+            database=config_data['mydb']['database']
+        )
+
+        mycursor = mydb.cursor()
+
+        sql = "DELETE FROM empleados WHERE nombre = %s"
+        val = (nombre,)
+        mycursor.execute(sql, val)
+
+        mydb.commit()
+
+        return "¡Empleado eliminado correctamente!"
+    except Exception as e:
+        return str(e), 400  
+
+
+
     app.config['STATIC_FOLDER'] = 'static'
 
 

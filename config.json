@@ -1,0 +1,7 @@
+{
+  "mydb": {
+    "host": "localhost",
+    "user": "root",
+    "database": "homies"
+  }
+}

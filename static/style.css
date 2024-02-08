@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Honk&display=swap');
+
+h1{
+  color:linear-gradient(90deg, rgba(108,2,255,1) 0%, rgba(195,23,190,1) 35%, rgba(179,124,255,1) 100%);
+  align-items: center;
+  font-family: 'Honk', sans-serif;
+}
+button{
+  background:linear-gradient(90deg, rgb(255, 108, 49) 0%, rgb(236, 197, 69) 35%, rgb(247, 253, 164) 100%);
+}
+a{
+  text-decoration: none;
+}
+
+

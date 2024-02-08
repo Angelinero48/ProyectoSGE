@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, render_template
+from flask import Flask, jsonify, request, render_template
 import mysql.connector
 
 
@@ -22,41 +22,44 @@ def vistaEmpleados():
 
 
 #Endpoint que devuelve una lista de empleados, filtrado porque el rol sea de empleado
-@app.route("/empleadosLista")
-def obtenerLista():
-    mydb = mysql.connector.connect(
-        host=config_data['mydb']['host'],
-        user=config_data['mydb']['user'],
-        database=config_data['mydb']['database']
-    )
+@app.route("/empleadosLista/<rol>", methods = ["GET"])
+def obtenerLista(rol):
+    try:
+        mydb = mysql.connector.connect(
+            host=config_data['mydb']['host'],
+            user=config_data['mydb']['user'],
+            database=config_data['mydb']['database']
+        )
 
-    mycursor = mydb.cursor()
+        mycursor = mydb.cursor()
 
-    # Consulta select con el filtrado de empleado
-    mycursor.execute("SELECT * FROM empleados WHERE rol='empleado'")
 
-    # Recuperar todas las filas del resultado
-    myresult = mycursor.fetchall()
+        sql = ("SELECT * FROM empleados WHERE rol = %s")
+        val = (rol,)
+        # Consulta select con el filtrado de empleado
+        mycursor.execute(sql,val)
 
-    # Verificar si se obtuvieron resultados
-    if myresult:
+        # Recuperar todas las filas del resultado
+        myresult = mycursor.fetchall()
+        
         #Nombre de las columnas, a través del .description
         column_names = [i[0] for i in mycursor.description]
 
-        # Crear una lista de diccionarios, cada uno representando a un empleado
+            # Crear una lista de diccionarios, cada uno representando a un empleado
         employees_dict_list = [
-            {column_names[i]: row[i] for i in range(len(column_names))}
-            for row in myresult
+        {column_names[i]: row[i] for i in range(len(column_names))}
+        for row in myresult
         ]
 
         # Convertimos esa lista en un json y lo mostramos
         return json.dumps(employees_dict_list)
-    else:
-        return "No se encontraron resultados."
+    except Exception as e:
+        return str(e), 400
+        
 
 
 #Endpoint que añade un nuevo usuario
-@app.route("/empleadosNuevo", methods=["POST"])
+@app.route("/empleadoNuevo", methods=["POST"])
 
 def AñadirEmpleado():
 
@@ -69,7 +72,7 @@ def AñadirEmpleado():
         id_empleado = data["id_empleado"]
         rol = data["rol"]
 
-        # Conectar a la base de datos y realizar la inserción
+        
         mydb = mysql.connector.connect(
             host=config_data['mydb']['host'],
             user=config_data['mydb']['user'],
@@ -84,39 +87,41 @@ def AñadirEmpleado():
 
         mydb.commit()
 
-        return "¡Añadido correctamente!"
+        return jsonify({"mensaje": "Correcto!"}), 200
     except Exception as e:
-        return str(e), 400  # Devolver un mensaje de error y código de estado 400 en caso de problemas
+        return jsonify({"Error"}),400  
     
 
 #Endpoint modificar rol del empleado
-@app.route("/modificarEmpleado", methods=["PUT"])
-def modificarEmpleado():
-    
-    data=request.get_json()
+@app.route("/modificarEmpleado/<id>", methods=["POST"])
+def modificarEmpleado(id):
+    try:
+        data=request.get_json()
 
-    id_empleado = data["id_empleado"]
-    nuevoRol = data["nuevoRol"]
+        nuevoNombre=data["nuevoNombre"]
+        nuevoRol = data["nuevoRol"]
 
-    mydb = mysql.connector.connect(
-            host=config_data['mydb']['host'],
-            user=config_data['mydb']['user'],
-            database=config_data['mydb']['database']
-        )
+        mydb = mysql.connector.connect(
+                host=config_data['mydb']['host'],
+                user=config_data['mydb']['user'],
+                database=config_data['mydb']['database']
+            )
 
-    mycursor = mydb.cursor()
+        mycursor = mydb.cursor()
 
-    sql = ("UPDATE empleados SET rol = %s WHERE id_empleado=%s")
-    val=(nuevoRol,id_empleado)
-    mycursor.execute(sql,val)
+        sql = ("UPDATE empleados SET rol = %s, nombre = %s WHERE id_empleado=%s")
+        val=(nuevoRol,nuevoNombre,id,)
+        mycursor.execute(sql,val)
 
-    mydb.commit()
+        mydb.commit()
 
-    return "¡Empleado modificado correctamente!"
+        return {"mensaje": "Ok"}, 200
+    except Exception as e:
+        return {"Error": str(e)}, 400
 
-@app.route("/eliminarEmpleado/<nombre>", methods=["DELETE"])
+@app.route("/eliminarEmpleado/<id>", methods=["DELETE"])
 
-def eliminarEmpleado(nombre):
+def eliminarEmpleado(id):
     try:
         mydb = mysql.connector.connect(
             host=config_data['mydb']['host'],
@@ -126,15 +131,15 @@ def eliminarEmpleado(nombre):
 
         mycursor = mydb.cursor()
 
-        sql = "DELETE FROM empleados WHERE nombre = %s"
-        val = (nombre,)
+        sql = "DELETE FROM empleados WHERE id_empleado = %s"
+        val = (id,)
         mycursor.execute(sql, val)
 
         mydb.commit()
 
-        return "¡Empleado eliminado correctamente!"
+        return {"mensaje": "Ok"}, 200
     except Exception as e:
-        return str(e), 400  
+        return {"Error": str(e)}, 400
 
 
 

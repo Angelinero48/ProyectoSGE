@@ -22,7 +22,7 @@ Este endpoint sirve para **modificar** el usuario del que pasemos su id.
 ```
 eliminarEmpleado/id
 ```
-Este endpoint sirve para **modificar** el usuario del que pasemos su id.
+Este endpoint sirve para **eliminar** el usuario del que pasemos su id.
 ```
 empleado/id
 ```

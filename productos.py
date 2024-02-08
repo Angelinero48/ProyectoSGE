@@ -15,16 +15,20 @@ def hello_world():
 
   mycursor = mydb.cursor()
 
-  listaEmpleados = "SELECT * FROM productos"
+  productos = "SELECT * FROM productos"
 
-  mycursor.execute(listaEmpleados)
+  mycursor.execute(productos, { 'name': 0})
+  #mycursor.execute(marca_productos)
+  #mycursor.execute(modelo_producto)
+  #mycursor.execute(id_producto)
 
-  myresult = mycursor.fetchall()
+  bd = mycursor.execute(productos, { 'name': 0})
+  bd2 = str(bd)
 
   #convert into JSON:
-  y = json.dumps(myresult)
+  products_json = json.dumps(bd)
 
   # the result is a JSON string:
-  return y
+  return products_json
 
 

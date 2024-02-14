@@ -80,8 +80,10 @@ def modificarEmpleado(id_producto):
   try:
       data=request.get_json()
 
-      nuevoNombre=data["nuevoNombre"]
-      nuevoRol = data["nuevoRol"]
+      nombre = data["nombre"]
+      marca = data["marca"]
+      modelo = data["modelo"]
+      id_empleado = data["id_empleado"]
 
       mydb = mysql.connector.connect(
         host=config_data['mydb']['host'],
@@ -91,8 +93,8 @@ def modificarEmpleado(id_producto):
 
       mycursor = mydb.cursor()
 
-      sql = ("UPDATE empleados SET rol = %s, nombre = %s WHERE id_empleado=%s")
-      val=(nuevoRol,nuevoNombre,id,)
+      sql = ("UPDATE productos SET nombre = %s, marca = %s, modelo = %s, id_empleado = %s WHERE id_producto=%s")
+      val=(nombre,marca, modelo, id_empleado,id_producto,)
       mycursor.execute(sql,val)
 
       mydb.commit()
@@ -100,3 +102,51 @@ def modificarEmpleado(id_producto):
       return {"mensaje": "Ok"}, 200
   except Exception as e:
       return {"Error": str(e)}, 400
+  
+@app.route("/eliminarProducto/<id_producto>", methods=["DELETE"])
+def eliminarEmpleado(id_producto):
+  try:
+    mydb = mysql.connector.connect(
+      host=config_data['mydb']['host'],
+      user=config_data['mydb']['user'],
+      database=config_data['mydb']['database']
+    )
+
+    mycursor = mydb.cursor()
+
+    sql = "DELETE FROM productos WHERE id_producto = %s"
+    val = (id_producto,)
+    mycursor.execute(sql, val)
+
+    mydb.commit()
+
+    return {"mensaje": "Ok"}, 200
+  except Exception as e:
+    return {"Error": str(e)}, 400
+
+
+@app.route("/producto/<id_producto>", methods = ["GET"])
+def obtenerEmpleado(id_producto):
+  try:
+    mydb = mysql.connector.connect(
+      host=config_data['mydb']['host'],
+      user=config_data['mydb']['user'],
+      database=config_data['mydb']['database']
+    )
+
+    mycursor = mydb.cursor()
+
+    sql = "SELECT * FROM productos WHERE id_producto = %s"
+    val = (id_producto,)
+    mycursor.execute(sql, val)
+
+    myresult = mycursor.fetchone()
+
+    columnasTabla = [i[0] for i in mycursor.description]
+
+    empleado = {columnasTabla[i]: myresult[i] for i in range(len(columnasTabla))}
+    
+
+    return json.dumps(empleado)
+  except Exception as e:
+    return {"Error": str(e)}, 400

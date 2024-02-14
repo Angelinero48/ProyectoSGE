@@ -7,23 +7,27 @@ with open('config.json', 'r') as file:
 
 app = Flask(__name__)
 
-@app.route("/ListaProductos")
-def lista_producto():
-  mydb = mysql.connector.connect(
-    host=config_data['mydb']['host'],
-    user=config_data['mydb']['user'],
-    database=config_data['mydb']['database']
-  )
+@app.route("/ListaProductos/<marca>", methods = ["GET"])
+def lista_producto(marca):
+  try:
+    mydb = mysql.connector.connect(
+      host=config_data['mydb']['host'],
+      user=config_data['mydb']['user'],
+      database=config_data['mydb']['database']
+    )
 
-  mycursor = mydb.cursor()
+    mycursor = mydb.cursor()
 
-  mycursor.execute("SELECT * FROM productos")
+    sql = ("SELECT * FROM productos WHERE marca = %s")
+    val = (marca,)
 
-  #Recuperar todas las filas del resultado
-  myresult = mycursor.fetchall()
+    mycursor.execute(sql, val)
 
-  if myresult:
+    #Recuperar todas las filas del resultado
+    myresult = mycursor.fetchall()
+
     
+      
     column_names = [i[0] for i in mycursor.description]
 
     empleoyees_dict_list = [
@@ -32,8 +36,8 @@ def lista_producto():
     ]
 
     return json.dumps(empleoyees_dict_list)
-  else:
-    return "No se encontraron resultados"
+  except Exception as e:
+    return str(e), 400
   
 
 @app.route("/AñadirProducto", methods=["POST"])
@@ -71,4 +75,28 @@ def añadir_producto():
     return str(e), 400 # Ddevuelve un mensaje de erro con codigo 400
 
 
+@app.route("/modificarProducto/<id_producto>", methods=["POST"])
+def modificarEmpleado(id_producto):
+  try:
+      data=request.get_json()
 
+      nuevoNombre=data["nuevoNombre"]
+      nuevoRol = data["nuevoRol"]
+
+      mydb = mysql.connector.connect(
+        host=config_data['mydb']['host'],
+        user=config_data['mydb']['user'],
+        database=config_data['mydb']['database']
+      )
+
+      mycursor = mydb.cursor()
+
+      sql = ("UPDATE empleados SET rol = %s, nombre = %s WHERE id_empleado=%s")
+      val=(nuevoRol,nuevoNombre,id,)
+      mycursor.execute(sql,val)
+
+      mydb.commit()
+
+      return {"mensaje": "Ok"}, 200
+  except Exception as e:
+      return {"Error": str(e)}, 400

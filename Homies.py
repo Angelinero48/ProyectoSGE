@@ -171,7 +171,7 @@ def obtenerEmpleado(id):
 
 #   EndPoints Tabla Productos - Jorge Reina Romero
     
-@app.route("/ListaProductos/<marca>", methods = ["GET"])
+@app.route("/listaProductos/<marca>", methods = ["GET"])
 def lista_producto(marca):
   try:
     mydb = mysql.connector.connect(
@@ -204,7 +204,7 @@ def lista_producto(marca):
     return str(e), 400
 
 
-@app.route("/AñadirProducto", methods=["POST"])
+@app.route("/añadirProducto", methods=["POST"])
 def añadir_producto():
 
   try:

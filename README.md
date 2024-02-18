@@ -52,3 +52,24 @@ Este endpoint sirve para **eliminar** el producto del id  que pasemos.
 producto/id_producto
 ```
 Este endpoint nos sirve para **obtener la información** del producto que pasemos su id.
+
+_Endpoints de detalleproducto_ ⬇
+# DetalleProducto👟
+
+```
+detalleProducto/id_producto
+```
+Este endpoint nos sirve para **obtener la información** de lo detalles de un producto segun su id
+```
+añadirDetalleProducto/id_producto
+```
+Este endpoint sirve para **crear** los detalles de un producto segun su id
+```
+modificarDetalleProducto/id_producto
+```
+Este endpoint sirve para **modificar** los detalles de un producto segun su id
+```
+eliminarDetalleProducto/id_producto
+```
+Este endpoint sirve para **eliminar** los detalles de un producto segun su id
+```

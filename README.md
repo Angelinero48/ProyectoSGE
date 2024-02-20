@@ -3,7 +3,7 @@
 
 
 ## Endpoints
-# Empleados👷
+# Empleados(Ángel Linero)👷
 
 _Endpoints de los empleados_ ⬇
 
@@ -28,7 +28,7 @@ empleado/id
 ```
 Este endpoint nos sirve para **obtener la información** del usuario que pasemos su id.
 
-# Productos👟
+# Productos(Jorge Reina)👟
 
 _Endpoints de los empleados_ ⬇
 
@@ -54,7 +54,7 @@ producto/id_producto
 Este endpoint nos sirve para **obtener la información** del producto que pasemos su id.
 
 _Endpoints de detalleproducto_ ⬇
-# DetalleProducto👟
+# DetalleProducto(Amanda Navas)👟
 
 ```
 detalleProducto/id_producto
